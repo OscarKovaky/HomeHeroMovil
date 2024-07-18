@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter_application_1",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",  // Ruta al archivo principal de tu aplicación
+            "cwd": "${workspaceFolder}", // Directorio de trabajo actual
+            "flutterPlatform": "default" // Puedes especificar la plataforma: android, ios, web
+        },
+        {
+            "name": "flutter_application_1 (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
+            "flutterMode": "profile",
+            "flutterPlatform": "default"
+        },
+        {
+            "name": "flutter_application_1 (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
+            "flutterMode": "release",
+            "flutterPlatform": "default"
+        }
+    ]
+}
