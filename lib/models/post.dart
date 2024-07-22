@@ -1,10 +1,11 @@
-// lib/models/item.dart// lib/models/post.dart
-class Post {
-  final int id;
+import '../services/api_service.dart';
+
+class Post implements JsonSerializable {
+  final int? id;
   final String title;
   final String body;
 
-  Post({required this.id, required this.title, required this.body});
+  Post({this.id, required this.title, required this.body});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
@@ -14,9 +15,9 @@ class Post {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'body': body,
     };
