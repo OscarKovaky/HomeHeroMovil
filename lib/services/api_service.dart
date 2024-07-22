@@ -1,57 +1,65 @@
-// lib/services/api_service.dart
-// lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/models/post.dart';
-import 'package:flutter_application_1/config.dart';
+import '../config.dart';
 
-class ApiService {
-  final String apiUrl = Config.apiUrl;
+abstract class ApiService<T extends JsonSerializable> {
+  final String endpoint;
 
-  Future<List<Post>> getPosts() async {
+  ApiService(this.endpoint);
+
+  String get apiUrl => '${Config.baseUrl}/$endpoint';
+
+  T fromJson(Map<String, dynamic> json);
+  Map<String, dynamic> toJson(T item);
+
+  Future<List<T>> getAll() async {
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(response.body);
-      return jsonResponse.map((post) => Post.fromJson(post)).toList();
+      return jsonResponse.map((data) => fromJson(data)).toList();
     } else {
-      throw Exception('Failed to load posts');
+      throw Exception('Failed to load items');
     }
   }
 
-  Future<Post> createPost(String title, String body) async {
+  Future<T> create(T item) async {
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'title': title, 'body': body}),
+      body: json.encode(toJson(item)),
     );
 
     if (response.statusCode == 201) {
-      return Post.fromJson(json.decode(response.body));
+      return fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to create post');
+      throw Exception('Failed to create item');
     }
   }
 
-  Future<Post> updatePost(int id, String title, String body) async {
+  Future<T> update(int id, T item) async {
     final response = await http.put(
       Uri.parse('$apiUrl/$id'),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'title': title, 'body': body}),
+      body: json.encode(toJson(item)),
     );
 
-    if (response.statusCode == 204) {
-      return Post.fromJson(json.decode(response.body));
+    if (response.statusCode == 200) {
+      return fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to update post');
+      throw Exception('Failed to update item');
     }
   }
 
-  Future<void> deletePost(int id) async {
+  Future<void> delete(int id) async {
     final response = await http.delete(Uri.parse('$apiUrl/$id'));
 
     if (response.statusCode != 204) {
-      throw Exception('Failed to delete post');
+      throw Exception('Failed to delete item');
     }
   }
+}
+
+abstract class JsonSerializable {
+  Map<String, dynamic> toJson();
 }
